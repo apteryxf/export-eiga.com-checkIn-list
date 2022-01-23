@@ -37,7 +37,7 @@ const args = minimist(process.argv.slice(2))
 
 main(args.userId, args.email, args.password).catch((e) => {
   if (args.length !== 3) {
-    console.error("引数が足りません")
+    console.error("引数は３つ入力してください")
     process.exit(1)
   }
   console.error(e)
