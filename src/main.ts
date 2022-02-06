@@ -1,7 +1,6 @@
 import path from "path"
 import fs from "fs"
 import puppeteer from "puppeteer"
-import minimist from "minimist"
 
 const eigaDotComDomain = "https://eiga.com"
 
@@ -60,7 +59,7 @@ const main = async (userId: string, email: string, password: string) => {
 
     if (pageNumber === 103)
       fs.writeFileSync(
-        path.join(process.cwd(), "result.json"),
+        path.join(process.cwd(), "export/check-in.json"),
         JSON.stringify(titles)
       )
   }
@@ -71,7 +70,7 @@ const main = async (userId: string, email: string, password: string) => {
 
   // ここでファイルを書き込むと titles が空配列
   // fs.writeFileSync(
-  //   path.join(process.cwd(), "result.txt"),
+  //   path.join(process.cwd(), "export/check-in.json"),
   //   JSON.stringify(titles)
   // )
 
@@ -79,12 +78,9 @@ const main = async (userId: string, email: string, password: string) => {
   // await browser.close()
 }
 
-const args = minimist(process.argv.slice(2))
+const buffer = fs.readFileSync(path.join(process.cwd(), "credential.json"))
+const { userId, email, password } = JSON.parse(buffer.toString())
 
-main(args.userId, args.email, args.password).catch((e) => {
-  if (args.length !== 3) {
-    console.error("引数は3つ入力してください")
-    process.exit(1)
-  }
+main(userId, email, password).catch((e) => {
   console.error(e)
 })
