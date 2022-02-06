@@ -1,12 +1,14 @@
+import path from "path"
+import fs from "fs"
 import puppeteer from "puppeteer"
 import minimist from "minimist"
 
 const eigaDotComDomain = "https://eiga.com"
 
 const main = async (userId: string, email: string, password: string) => {
-  const viewPort = { width: 1400, height: 1400 }
+  const viewPort = { width: 2000, height: 3000 }
   const browser = await puppeteer.launch({
-    headless: false,
+    // headless: false,
     defaultViewport: viewPort,
   })
   const page = await browser.newPage()
@@ -30,14 +32,25 @@ const main = async (userId: string, email: string, password: string) => {
   const targetUrl = `${eigaDotComDomain}/user/${userId}/movie`
 
   await page.goto(targetUrl)
-  // await browser.close()
+
+  // get title texts
+  const selector = ".list-my-data > .data-txt > .title"
+  const titleTexts = await page.$$eval(selector, (elements) =>
+    elements.map((element) => element.textContent)
+  )
+  fs.writeFileSync(
+    path.join(process.cwd(), "result.txt"),
+    JSON.stringify(titleTexts)
+  )
+
+  await browser.close()
 }
 
 const args = minimist(process.argv.slice(2))
 
 main(args.userId, args.email, args.password).catch((e) => {
   if (args.length !== 3) {
-    console.error("引数は３つ入力してください")
+    console.error("引数は3つ入力してください")
     process.exit(1)
   }
   console.error(e)
