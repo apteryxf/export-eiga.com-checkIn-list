@@ -4,7 +4,7 @@
 
 1. `yarn`
 
-1. add `{projectRoot}/credential.json`
+1. add `{projectRoot}/credential.json` for your account credential
 
 1. `yarn start`
 
