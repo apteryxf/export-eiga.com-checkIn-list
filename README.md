@@ -1,6 +1,6 @@
 # export-eiga-dot-com-watch-list
 
-1. `git clone`
+1. `git clone https://github.com/apteryxf/export-eigaDotCom-checkIn-list`
 
 1. `yarn`
 
