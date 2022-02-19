@@ -1,7 +1,20 @@
 # export-eiga-dot-com-watch-list
 
-`git clone`
+1. `git clone`
 
-`yarn`
+1. `yarn`
 
-`yarn start --userId=foo --email=bar --password=buz`
+1. add `{projectRoot}/credential.json`
+
+1. `yarn start`
+
+##
+
+sample credential.json
+  ```json
+    {
+      "userId": "",
+      "email": "foo@gmail.com",
+      "password": "foobarbuz"
+    }
+  ```
