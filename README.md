@@ -13,7 +13,7 @@
 sample credential.json
   ```json
     {
-      "userId": "",
+      "userId": "123456",
       "email": "foo@gmail.com",
       "password": "foobarbuz"
     }
