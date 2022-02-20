@@ -1,6 +1,6 @@
 import path from "path"
 import fs from "fs"
-import puppeteer from "puppeteer"
+import puppeteer, { Browser, Page } from "puppeteer"
 
 const eigaDotComDomain = "https://eiga.com"
 
@@ -13,10 +13,25 @@ const range = (from: number, to: number): number[] => {
   return range
 }
 
+const openDetailPages = async (
+  paginatedPage: Page,
+  browser: Browser
+): Promise<Page[]> => {
+  const titleLinks = await paginatedPage.$x("//div[@class='data-img']/a")
+  return Promise.all(
+    titleLinks.map(async (link) => {
+      const detailPage = await browser.newPage()
+      const detailUrl = await (await link.getProperty("href")).jsonValue()
+      detailPage.goto(`${detailUrl}`, { waitUntil: "domcontentloaded" })
+      return detailPage
+    })
+  )
+}
+
 const main = async (userId: string, email: string, password: string) => {
   const viewPort = { width: 1000, height: 2000 }
   const browser = await puppeteer.launch({
-    // headless: false,
+    headless: false,
     defaultViewport: viewPort,
   })
   const page = await browser.newPage()
@@ -42,31 +57,37 @@ const main = async (userId: string, email: string, password: string) => {
 
   let titles: string[] = []
   const getTitles = async (pageNumber: number) => {
-    const newPage = await browser.newPage()
+    const paginatedPage = await browser.newPage()
     if (pageNumber === 1) {
-      await newPage.goto(targetUrl, { waitUntil: "domcontentloaded" })
+      await paginatedPage.goto(targetUrl, { waitUntil: "domcontentloaded" })
     } else {
-      await newPage.goto(`${targetUrl}/new/${String(pageNumber)}`, {
+      await paginatedPage.goto(`${targetUrl}/new/${String(pageNumber)}`, {
         waitUntil: "domcontentloaded",
       })
     }
 
-    const selector = ".list-my-data > .data-txt > .title"
-    const tmpTitles = await newPage.$$eval(selector, (elements) =>
-      elements.map((element) => element.textContent ?? "")
-    )
-    titles = [...titles, ...tmpTitles]
+    const detailPages = await openDetailPages(paginatedPage, browser)
 
-    if (pageNumber === 103)
-      fs.writeFileSync(
-        path.join(process.cwd(), "export/check-in.json"),
-        JSON.stringify(titles)
+    detailPages.map(async (page) => {
+      const selector = ".movie-details > .data"
+      const tmpTitle = await page.$$eval(
+        selector,
+        (elements) => elements[0].textContent ?? ""
       )
+      console.log(tmpTitle)
+      titles = [...titles, tmpTitle]
+      page.close()
+    })
+
+    // if (pageNumber === 103)
+    fs.writeFileSync(
+      path.join(process.cwd(), "export/check-in.json"),
+      JSON.stringify(titles)
+    )
+    await paginatedPage.waitFor(1000)
   }
 
-  range(1, 103).forEach(async (i) => {
-    setTimeout(async () => await getTitles(i), 3000)
-  })
+  range(1, 1).forEach(async (i) => await getTitles(i))
 
   // ここでファイルを書き込むと titles が空配列
   // fs.writeFileSync(
