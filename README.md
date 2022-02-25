@@ -10,7 +10,7 @@
 
 ##
 
-sample credential.json
+Here is sample of credential.json
   ```json
     {
       "userId": "123456",
