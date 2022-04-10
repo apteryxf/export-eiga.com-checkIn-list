@@ -1,4 +1,4 @@
-# export-eiga-dot-com-watch-list
+# export-eiga.com-watch-list
 
 1. `git clone https://github.com/apteryxf/export-eigaDotCom-checkIn-list`
 
