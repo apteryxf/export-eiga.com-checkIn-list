@@ -15,6 +15,6 @@ Here is sample of `credential.json`.
     {
       "userId": "123456",
       "email": "foo@gmail.com",
-      "password": "foobarbuz"
+      "password": "fooBarBuz"
     }
   ```
