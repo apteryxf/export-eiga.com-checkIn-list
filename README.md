@@ -1,7 +1,5 @@
 # export-eiga.com-watch-list
 
-1. `git clone https://github.com/apteryxf/export-eigaDotCom-checkIn-list`
-
 1. `yarn`
 
 1. add `{projectRoot}/credential.json` for your account credential
